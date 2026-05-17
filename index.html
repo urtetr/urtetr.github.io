@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="余阳天的个人网盘，提供个人文件分享、文档、图片、压缩包等资源在线下载与管理服务。">
+
+  <!-- 🔥 不用上传图片！直接显示蓝色云图标，绝对能加载 -->
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/32/2659/2659852.png" type="image/png">
+
+  <title>余阳天的网盘-个人文件分享平台</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            secondary: '#64748b',
+            success: '#22c55e',
+            danger: '#ef4444',
+            warning: '#f59e0b',
+            info: '#0ea5e9',
+            light: '#f8fafc',
+            dark: '#1e293b'
+          },
+          fontFamily: {
+            sans: ['Inter','system-ui','sans']
+          },
+          boxShadow: {
+            'card': '0 4px 6px -1 rgba(0,0,0,0.1),0 2px 4px -1 rgba(0,0,0,0.06)',
+            'card-hover': '0 10px 15px -3 rgba(0,0,0,0.1),0 4px 6px -2 rgba(0,0,0,0.05)'
+          }
+        }
+      }
+    }
+  </script>
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .transition-all-300 { transition: all 0.3s ease; }
+      .folder-tree-line { position: relative; }
+      .folder-tree-line::before {
+        content: ''; position: absolute; left:10px; top:0; height:100%; width:1px; background:#e2e8f0;
+      }
+      .folder-tree-item::before {
+        content: ''; position: absolute; left:10px; top:12px; width:10px; height:1px; background:#e2e8f0;
+      }
+      .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
+      @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+      .animate-slide-in { animation: slideIn 0.3s ease-in-out; }
+      @keyframes slideIn { from { transform:translateX(-20px); opacity:0; } to { transform:translateX(0px); opacity:1; } }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+<header class="bg-white shadow-sm">
+  <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+    <div class="flex items-center space-x-2">
+      <button id="adminLoginBtn" class="text-primary hover:text-primary-dark transition-all-300 mr-2">
+        <i class="fa fa-cloud text-2xl"></i>
+      </button>
+      <h1 class="text-xl font-bold text-gray-800">余阳天的网盘</h1>
+    </div>
+    <div class="flex items-center space-x-4">
+      <div id="userStatus" class="text-sm text-gray-600">
+        <i class="fa fa-user-o mr-1"></i> 访客模式
+      </div>
+      <button id="exportBtn" class="hidden text-sm bg-blue-100 px-3 py-1 rounded hover:bg-blue-200">
+        导出 data.json
+      </button>
+    </div>
+  </div>
+</header>
+<main class="flex-grow container mx-auto px-4 py-6">
+  <div id="actionButtons" class="mb-6 flex flex-wrap gap-3">
+    <button id="addFolderBtn" class="hidden bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center space-x-2 transition-all-300">
+      <i class="fa fa-folder"></i><span>新建文件夹</span>
+    </button>
+    <button id="addFileBtn" class="hidden bg-success hover:bg-green-600 text-white px-4 py-2 rounded-md flex items-center space-x-2 transition-all-300">
+      <i class="fa fa-file"></i><span>添加文件</span>
+    </button>
+    <div class="ml-auto flex items-center relative">
+      <input type="text" id="searchInput" placeholder="搜索文件或文件夹..." class="pl-10 pr-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent">
+      <i class="fa fa-search absolute left-3 top-3 text-gray-40"></i>
+    </div>
+  </div>
+  <div class="bg-white rounded-lg shadow-card p-4">
+    <div id="fileTree" class="space-y-2">
+      <div class="text-center text-gray-500 py-8">
+        <i class="fa fa-folder-open-o text-5xl mb-3"></i><p>暂无文件或文件夹</p>
+      </div>
+    </div>
+  </div>
+</main>
+<footer class="bg-white border-t mt-auto">
+  <div class="container mx-auto px-4 py-3 text-center text-gray-600 text-sm">©余阳天的网盘V5.23.1 | 版权所有</div>
+</footer>
+<!-- 登录弹窗 -->
+<div id="adminLoginModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md animate-fade-in">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">管理员登录</h3>
+      <button class="closeModal text-gray-50 hover:text-gray-700"><i class="fa fa-times"></i></button>
+    </div>
+    <form id="adminLoginForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">请输入管理员密码</label>
+        <input type="password" id="adminPassword" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary" placeholder="输入密码">
+      </div>
+      <div id="loginError" class="hidden mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm"></div>
+      <div class="flex justify-end">
+        <button type="button" class="closeModal mr-2 px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100">取消</button>
+        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600">登录</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- 新建文件夹 -->
+<div id="addFolderModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md animate-fade-in">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">新建文件夹</h3>
+      <button class="closeModal text-gray-50 hover:text-gray-700"><i class="fa fa-times"></i></button>
+    </div>
+    <form id="addFolderForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">文件夹名称</label>
+        <input type="text" id="folderName" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">所属文件夹</label>
+        <select id="parentFolder" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+          <option value="">根目录</option>
+        </select>
+      </div>
+      <div id="folderError" class="hidden mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm"></div>
+      <div class="flex justify-end">
+        <button type="button" class="closeModal mr-2 px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100">取消</button>
+        <button type="submit" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-blue-600">创建</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- 添加文件 -->
+<div id="addFileModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md animate-fade-in">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">添加文件</h3>
+      <button class="closeModal text-gray-50 hover:text-gray-700"><i class="fa fa-times"></i></button>
+    </div>
+    <form id="addFileForm">
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">文件名称</label>
+        <input type="text" id="fileName" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">下载地址</label>
+        <input type="url" id="fileUrl" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary" required>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">文件类型</label>
+        <select id="fileType" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+          <option value="pdf">PDF文档 (.pdf)</option>
+          <option value="doc">Word文档 (.doc,.docx)</option>
+          <option value="img">图片 (.jpg,.png)</option>
+          <option value="zip">压缩包 (.zip,.rar)</option>
+          <option value="text">文本 (.txt,.md)</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700 text-sm font-medium mb-2">所属文件夹</label>
+        <select id="fileParentFolder" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary">
+          <option value="">根目录</option>
+        </select>
+      </div>
+      <div id="fileError" class="hidden mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm"></div>
+      <div class="flex justify-end">
+        <button type="button" class="closeModal mr-2 px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100">取消</button>
+        <button type="submit" class="px-4 py-2 bg-success text-white rounded-md hover:bg-green-600">添加</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- 删除确认 -->
+<div id="deleteConfirmModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white rounded-lg shadow-lg p-6 w-full max-w-md animate-fade-in">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-gray-800">确认删除</h3>
+      <button class="closeModal text-gray-50 hover:text-gray-700"><i class="fa fa-times"></i></button>
+    </div>
+    <p class="text-gray-600 mb-4">确定删除 <span id="deleteItemName" class="font-medium text-gray-800"></span>？无法撤销</p>
+    <div class="flex justify-end">
+      <button type="button" class="closeModal mr-2 px-4 py-2 border rounded-md text-gray-700 hover:bg-gray-100">取消</button>
+      <button id="confirmDeleteBtn" class="px-4 py-2 bg-danger text-white rounded-md hover:bg-red-600">确认删除</button>
+    </div>
+  </div>
+</div>
+<!-- 通知 -->
+<div id="notification" class="fixed top-4 right-4 px-4 py-3 rounded-md shadow-lg transform translate-x-full transition-transform duration-300 z-50 flex items-center">
+  <i id="notificationIcon" class="mr-2"></i>
+  <span id="notificationMessage"></span>
+</div>
+<script>
+  let currentUser = 'guest';
+  let currentFolderId = '';
+  let deleteItemId = null;
+  let searchQuery = '';
+  let data = { folders: [], files: [] };
+  const ADMIN_PWD = '08257891';
+  async function loadFromServer() {
+    try {
+      const timestamp = Date.now();
+      const jsonUrl = `/data.json?${timestamp}`;
+      const response = await fetch(jsonUrl, {
+        method: 'GET',
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache',
+          'Expires': '0'
+        }
+      });
+      if (response.ok) {
+        data = await response.json();
+        console.log('✅ 已加载最新 data.json:', data);
+      } else {
+        console.warn('⚠️ data.json 请求失败:', response.status);
+      }
+    } catch (err) {
+      console.error('❌ 加载 data.json 出错:', err);
+    }
+    renderFileTree();
+    populateFolderSelectors();
+  }
+  document.getElementById('exportBtn').onclick = () => {
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: 'application/json'
+    });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'data.json';
+    a.click();
+    showNotification('导出成功，请上传到 Neocities 覆盖');
+  };
+  function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  }
+  function showNotification(msg, type = 'success') {
+    const n = document.getElementById('notification');
+    const i = document.getElementById('notificationIcon');
+    const t = document.getElementById('notificationMessage');
+    t.textContent = msg;
+    if (type === 'success') {
+      n.className = 'fixed top-4 right-4 px-4 py-3 bg-green-100 text-green-700 rounded-md shadow-lg transform transition-transform duration-300 z-50 flex items-center';
+      i.className = 'fa fa-check-circle mr-2';
+    } else {
+      n.className = 'fixed top-4 right-4 px-4 py-3 bg-red-100 text-red-700 rounded-md shadow-lg transform transition-transform duration-300 z-50 flex items-center';
+      i.className = 'fa fa-exclamation-circle mr-2';
+    }
+    n.classList.remove('translate-x-full');
+    setTimeout(() => n.classList.add('translate-x-full'), 3000);
+  }
+  function switchUser(user) {
+    currentUser = user;
+    const s = document.getElementById('userStatus');
+    const a = document.getElementById('addFolderBtn');
+    const b = document.getElementById('addFileBtn');
+    const ex = document.getElementById('exportBtn');
+    if (user === 'admin') {
+      s.innerHTML = '<i class="fa fa-user mr-1"></i> 管理员模式';
+      a.classList.remove('hidden');
+      b.classList.remove('hidden');
+      ex.classList.remove('hidden');
+      showNotification('管理员模式已开启');
+    } else {
+      s.innerHTML = '<i class="fa fa-user-o mr-1"></i> 访客模式';
+      a.classList.add('hidden');
+      b.classList.add('hidden');
+      ex.classList.add('hidden');
+    }
+    renderFileTree();
+  }
+  function addDeleteEventListeners() {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = e => {
+        e.stopPropagation();
+        const id = btn.dataset.id;
+        const type = btn.dataset.type;
+        const item = type === 'folder'
+          ? data.folders.find(x => x.id === id)
+          : data.files.find(x => x.id === id);
+        if (item) {
+          deleteItemId = { id, type };
+          document.getElementById('deleteItemName').textContent = item.name;
+          document.getElementById('deleteConfirmModal').classList.remove('hidden');
+        } else showNotification('项目不存在', 'error');
+      };
+    });
+  }
+  function renderFileTree() {
+    const tree = document.getElementById('fileTree');
+    let folders = [...data.folders];
+    let files = [...data.files];
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      folders = folders.filter(x => x.name.toLowerCase().includes(q));
+      files = files.filter(x => x.name.toLowerCase().includes(q));
+    } else {
+      folders = folders.filter(x => x.parentId === currentFolderId);
+      files = files.filter(x => x.parentId === currentFolderId);
+    }
+    tree.innerHTML = '';
+    if (folders.length === 0 && files.length === 0) {
+      tree.innerHTML = `<div class="text-center text-gray-500 py-8"><i class="fa fa-folder-open-o text-5xl mb-3"></i><p>${searchQuery ? '无匹配结果' : '空文件夹'}</p></div>`;
+      return;
+    }
+    folders.forEach(folder => {
+      const d = document.createElement('div');
+      d.className = 'folder-item animate-slide-in';
+      d.dataset.id = folder.id;
+      d.innerHTML = `
+            <div class="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer">
+                <div class="flex items-center flex-grow"><i class="fa fa-folder text-yellow-500 mr-3"></i><span class="truncate">${folder.name}</span></div>
+                ${currentUser === 'admin' ? `<div><button class="delete-btn text-red-500 hover:bg-red-100 p-1 rounded" data-id="${folder.id}" data-type="folder" title="删除"><i class="fa fa-trash-o"></i></button></div>` : ''}
+            </div><div class="folder-content ml-6 hidden"></div>`;
+      tree.appendChild(d);
+      d.querySelector('.flex.items-center.p-2').onclick = e => {
+        if (e.target.closest('.delete-btn')) return;
+        const c = d.querySelector('.folder-content');
+        const i = d.querySelector('.fa-folder');
+        if (c.classList.contains('hidden')) {
+          c.classList.remove('hidden');
+          i.className = 'fa fa-folder-open text-yellow-500 mr-3';
+          loadFolderContent(folder.id, c);
+        } else {
+          c.classList.add('hidden');
+          i.className = 'fa fa-folder text-yellow-500 mr-3';
+        }
+      };
+    });
+    files.forEach(file => {
+      const d = document.createElement('div');
+      d.className = 'file-item animate-slide-in';
+      let icon = 'fa-file-o';
+      if (file.fileType === 'pdf') icon = 'fa-file-pdf-o text-red-500';
+      else if (file.fileType === 'doc') icon = 'fa-file-word-o text-blue-500';
+      else if (file.fileType === 'img') icon = 'fa-file-image-o text-purple-500';
+      else if (file.fileType === 'zip') icon = 'fa-file-archive-o text-gray-500';
+      else if (file.fileType === 'text') icon = 'fa-file-text-o text-blue-400';
+      d.innerHTML = `
+            <div class="flex items-center p-2 hover:bg-gray-100 rounded-md">
+                <div class="flex items-center flex-grow"><i class="fa ${icon} mr-3"></i><span class="truncate">${file.name}</span></div>
+                ${currentUser === 'admin' ? `<div><button class="delete-btn text-red-500 hover:bg-red-100 p-1 rounded" data-id="${file.id}" data-type="file" title="删除"><i class="fa fa-trash-o"></i></button></div>` : ''}
+            </div>`;
+      tree.appendChild(d);
+      d.querySelector('.flex.items-center.p-2').onclick = e => {
+        if (e.target.closest('.delete-btn')) return;
+        window.open(file.url, '_blank');
+      };
+    });
+    addDeleteEventListeners();
+  }
+  function loadFolderContent(fid, el) {
+    const subFolders = data.folders.filter(x => x.parentId === fid);
+    const subFiles = data.files.filter(x => x.parentId === fid);
+    el.innerHTML = '';
+    subFolders.forEach(folder => {
+      const d = document.createElement('div');
+      d.className = 'folder-subitem mt-1 animate-slide-in';
+      d.innerHTML = `
+            <div class="flex items-center p-2 hover:bg-gray-100 rounded-md cursor-pointer">
+                <div class="flex items-center flex-grow"><i class="fa fa-folder text-yellow-500 mr-3"></i><span class="truncate">${folder.name}</span></div>
+                ${currentUser === 'admin' ? `<div><button class="delete-btn text-red-500 hover:bg-red-100 p-1 rounded" data-id="${folder.id}" data-type="folder"><i class="fa fa-trash-o"></i></button></div>` : ''}
+            </div><div class="folder-content ml-6 hidden"></div>`;
+      el.appendChild(d);
+      d.querySelector('.flex.items-center.p-2').onclick = e => {
+        if (e.target.closest('.delete-btn')) return;
+        const c = d.querySelector('.folder-content');
+        const i = d.querySelector('.fa-folder');
+        if (c.classList.contains('hidden')) {
+          c.classList.remove('hidden');
+          i.className = 'fa fa-folder-open text-yellow-500 mr-3';
+          loadFolderContent(folder.id, c);
+        } else {
+          c.classList.add('hidden');
+          i.className = 'fa fa-folder text-yellow-500 mr-3';
+        }
+      };
+    });
+    subFiles.forEach(file => {
+      const d = document.createElement('div');
+      d.className = 'file-subitem mt-1 animate-slide-in';
+      let icon = 'fa-file-o';
+      if (file.fileType === 'pdf') icon = 'fa-file-pdf-o text-red-500';
+      else if (file.fileType === 'doc') icon = 'fa-file-word-o text-blue-500';
+      d.innerHTML = `
+            <div class="flex items-center p-2 hover:bg-gray-100 rounded-md">
+                <div class="flex items-center flex-grow"><i class="fa ${icon} mr-3"></i><span class="truncate">${file.name}</span></div>
+                ${currentUser === 'admin' ? `<div><button class="delete-btn text-red-500 hover:bg-red-100 p-1 rounded" data-id="${file.id}" data-type="file"><i class="fa fa-trash-o"></i></button></div>` : ''}
+            </div>`;
+      el.appendChild(d);
+      d.querySelector('.flex.items-center.p-2').onclick = e => {
+        if (e.target.closest('.delete-btn')) return;
+        window.open(file.url, '_blank');
+      };
+    });
+    addDeleteEventListeners();
+  }
+  function populateFolderSelectors() {
+    const p = document.getElementById('parentFolder');
+    const fp = document.getElementById('fileParentFolder');
+    p.innerHTML = '<option value="">根目录</option>';
+    fp.innerHTML = '<option value="">根目录</option>';
+    function walk(pid, lvl) {
+      data.folders.filter(x => x.parentId === pid).forEach(x => {
+        const opt = document.createElement('option');
+        opt.value = x.id;
+        opt.textContent = '  '.repeat(lvl) + x.name;
+        p.appendChild(opt);
+        const opt2 = opt.cloneNode(true);
+        fp.appendChild(opt2);
+        walk(x.id, lvl + 1);
+      });
+    }
+    walk('', 0);
+  }
+  function deleteFolderRecursive(id) {
+    const subs = data.folders.filter(x => x.parentId === id);
+    subs.forEach(x => deleteFolderRecursive(x.id));
+    data.folders = data.folders.filter(x => x.id !== id);
+    data.files = data.files.filter(x => x.parentId !== id);
+  }
+  function initEvents() {
+    document.getElementById('adminLoginBtn').onclick = () => {
+      document.getElementById('adminLoginModal').classList.remove('hidden');
+    };
+    document.getElementById('adminLoginForm').onsubmit = e => {
+      e.preventDefault();
+      const p = document.getElementById('adminPassword').value;
+      if (p === ADMIN_PWD) {
+        switchUser('admin');
+        document.getElementById('adminLoginModal').classList.add('hidden');
+      } else {
+        document.getElementById('loginError').textContent = '密码错误';
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    };
+    document.getElementById('addFolderBtn').onclick = () => {
+      populateFolderSelectors();
+      document.getElementById('addFolderModal').classList.remove('hidden');
+    };
+    document.getElementById('addFolderForm').onsubmit = e => {
+      e.preventDefault();
+      const name = document.getElementById('folderName').value.trim();
+      const parent = document.getElementById('parentFolder').value;
+      if (!name) return showNotification('请输入名称', 'error');
+      data.folders.push({
+        id: generateId(),
+        name,
+        parentId: parent,
+        createdAt: new Date().toISOString()
+      });
+      renderFileTree();
+      populateFolderSelectors();
+      document.getElementById('addFolderModal').classList.add('hidden');
+      showNotification('创建成功');
+    };
+    document.getElementById('addFileBtn').onclick = () => {
+      populateFolderSelectors();
+      document.getElementById('addFileModal').classList.remove('hidden');
+    };
+    document.getElementById('addFileForm').onsubmit = e => {
+      e.preventDefault();
+      const name = document.getElementById('fileName').value.trim();
+      const url = document.getElementById('fileUrl').value.trim();
+      const type = document.getElementById('fileType').value;
+      const parent = document.getElementById('fileParentFolder').value;
+      if (!name || !url) return showNotification('请填写完整', 'error');
+      data.files.push({
+        id: generateId(),
+        name,
+        url,
+        parentId: parent,
+        fileType: type,
+        createdAt: new Date().toISOString()
+      });
+      renderFileTree();
+      document.getElementById('addFileModal').classList.add('hidden');
+      showNotification('添加成功');
+    };
+    document.getElementById('confirmDeleteBtn').onclick = () => {
+      if (!deleteItemId) return;
+      if (deleteItemId.type === 'folder') deleteFolderRecursive(deleteItemId.id);
+      else data.files = data.files.filter(x => x.id !== deleteItemId.id);
+      renderFileTree();
+      populateFolderSelectors();
+      document.getElementById('deleteConfirmModal').classList.add('hidden');
+      showNotification('删除成功');
+    };
+    document.getElementById('searchInput').oninput = e => {
+      searchQuery = e.target.value.trim();
+      renderFileTree();
+    };
+    document.querySelectorAll('.closeModal').forEach(b => {
+      b.onclick = () => {
+        document.querySelectorAll('.fixed.inset-0').forEach(m => m.classList.add('hidden'));
+      };
+    });
+  }
+  document.addEventListener('DOMContentLoaded', async () => {
+    await loadFromServer();
+    initEvents();
+  });
+</script>
+</body>
+</html>

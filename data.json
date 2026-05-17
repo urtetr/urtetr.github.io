@@ -1,0 +1,160 @@
+{
+  "folders": [
+    {
+      "id": "mof7q9vxw6g",
+      "name": "极域电子教室2024破解版",
+      "parentId": "",
+      "createdAt": "2026-04-26T03:32:41.997Z"
+    },
+    {
+      "id": "mof7r747tox",
+      "name": "教师端破解文件",
+      "parentId": "mof7q9vxw6g",
+      "createdAt": "2026-04-26T03:33:25.063Z"
+    },
+    {
+      "id": "mof7tk7fqdz",
+      "name": "安装程序",
+      "parentId": "mof7q9vxw6g",
+      "createdAt": "2026-04-26T03:35:15.339Z"
+    },
+    {
+      "id": "moz51rv3t9k",
+      "name": "VMware 虚拟机",
+      "parentId": "",
+      "createdAt": "2026-05-10T02:13:03.183Z"
+    },
+    {
+      "id": "moz528b7g1e",
+      "name": "17.0",
+      "parentId": "moz51rv3t9k",
+      "createdAt": "2026-05-10T02:13:24.499Z"
+    },
+    {
+      "id": "moz52zzx2iu",
+      "name": "25H2",
+      "parentId": "moz51rv3t9k",
+      "createdAt": "2026-05-10T02:14:00.381Z"
+    },
+    {
+      "id": "mp96jno34q5",
+      "name": "26H1",
+      "parentId": "moz51rv3t9k",
+      "createdAt": "2026-05-17T02:52:38.931Z"
+    }
+  ],
+  "files": [
+    {
+      "id": "mof7u39xnak",
+      "name": "TeacherMain.exe",
+      "url": "https://61-170-53-86.pd1.cjjd19.com:12349/user-other-free-download-cdn.123295.com/123-44/1cb49519/1713604-0/1cb4951916fb86d57f7371a98b21142c/c-m8002?v=5&t=1777779097&r=252UCU&bzc=1&bzs=313835353939363831323a323a313a36373337393230&ur=vvlgaaagvbmgv&urn=0&s=17777790977ebf20e8cc9cd93ed95abcfea45c7685&bzp=0&bi=917400977&filename=TeacherMain.exe&x-mf-biz-cid=b364e188-c7bc-4c61-b468-f4dd99263edb-c4937c&auto_redirect=0&ndcp=1&cache_type=1",
+      "parentId": "mof7r747tox",
+      "fileType": "other",
+      "createdAt": "2026-04-26T03:35:40.053Z"
+    },
+    {
+      "id": "mof7vua2l69",
+      "name": "Teacher_2.7.17496.exe",
+      "url": "https://59-47-239-236.pd1.cjjd19.com/1135-user-other-free-download-cdn.123295.com/123-299/68774532/1713604-0/68774532ec57cc897383f0dc0d9f552b/c-m99?v=5&t=1777779396&r=1GC8HK&bzc=1&bzs=313835353939363831323a323a313a323130343937353336&ur=vvlgaaagvbmgv&urn=0&s=1777779396921c00af2601ec4d3711bfcfbaf4bb16&bzp=0&bi=917400977&filename=Teacher_2.7.17496.exe&x-mf-biz-cid=315eb8a9-ebf2-49f8-9b42-745fbf5f9d9c-584000&auto_redirect=0&ndcp=1&cache_type=1",
+      "parentId": "mof7tk7fqdz",
+      "fileType": "other",
+      "createdAt": "2026-04-26T03:37:01.706Z"
+    },
+    {
+      "id": "mof7xsx1knf",
+      "name": "Student_2.7.17496.exe",
+      "url": "https://59-47-225-57.pd1.cjjd19.com/1135-user-other-free-download-cdn.123295.com/123-921/fceeccbf/1713604-0/fceeccbf65deb38b68530e584e4e2f99/c-m99?v=5&t=1777779463&r=ME6MSY&bzc=1&bzs=313835353939363831323a323a313a313237373538333336&ur=vvlgaaagvbmgv&urn=0&s=1777779463a5c70b589a97430bff58062f33ad7378&bzp=0&bi=917400977&filename=Student_2.7.17496.exe&x-mf-biz-cid=0edba4c7-8bbd-4d23-a4c9-cd22ec55258e-08139d&auto_redirect=0&ndcp=1&cache_type=1",
+      "parentId": "mof7tk7fqdz",
+      "fileType": "other",
+      "createdAt": "2026-04-26T03:38:33.253Z"
+    },
+    {
+      "id": "mof841h3o4f",
+      "name": "说明.txt",
+      "url": "https://sb7891.neocities.org/%E9%A2%84%E8%A7%88/%E8%AF%B4%E6%98%8E.txt",
+      "parentId": "mof7q9vxw6g",
+      "fileType": "text",
+      "createdAt": "2026-04-26T03:43:24.279Z"
+    },
+    {
+      "id": "mom6wglhkft",
+      "name": "极域电子教室快速上手指南.pdf",
+      "url": "https://sb7891.neocities.org/%E9%A2%84%E8%A7%88/%E6%9E%81%E5%9F%9F%E7%94%B5%E5%AD%90%E6%95%99%E5%AE%A4%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8B%E6%8C%87%E5%8D%97.pdf",
+      "parentId": "mof7q9vxw6g",
+      "fileType": "pdf",
+      "createdAt": "2026-05-01T00:43:54.245Z"
+    },
+    {
+      "id": "moz53yo37jl",
+      "name": "17.5.2",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/17.0/17.5.2.exe?sign=sMcmQFKzLjaGiG1WP7_fxEpp612WbB6lcTbow0rfGC8=:0",
+      "parentId": "moz528b7g1e",
+      "fileType": "other",
+      "createdAt": "2026-05-10T02:14:45.315Z"
+    },
+    {
+      "id": "moz54vfq8y9",
+      "name": "17.6.0",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/17.0/17.6.0.exe?sign=FicnL6Uj57_bTJtdbYUqZN6mjpAGeZCP6LV04wi4fjc=:0",
+      "parentId": "moz528b7g1e",
+      "fileType": "other",
+      "createdAt": "2026-05-10T02:15:27.782Z"
+    },
+    {
+      "id": "moz55n05em0",
+      "name": "17.6.1",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/17.0/17.6.1.exe?sign=hAzkHoFXeC9SMlWyNR8fndOQ6CgREnvfNlQNm29MiFY=:0",
+      "parentId": "moz528b7g1e",
+      "fileType": "other",
+      "createdAt": "2026-05-10T02:16:03.509Z"
+    },
+    {
+      "id": "moz56osvta2",
+      "name": "17.6.2",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/17.0/17.6.2.exe?sign=zTOnkgUohh2OHBPvVJaGIG9dK6QEKoxKancYy5-yomQ=:0",
+      "parentId": "moz528b7g1e",
+      "fileType": "other",
+      "createdAt": "2026-05-10T02:16:52.495Z"
+    },
+    {
+      "id": "moz57n9vbox",
+      "name": "17.6.3",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/17.0/17.6.3.exe?sign=bZ2QNqQH_Ba_qv6omJf4bvr0bdBzXfs5QlrtR_qUx5g=:0",
+      "parentId": "moz528b7g1e",
+      "fileType": "other",
+      "createdAt": "2026-05-10T02:17:37.171Z"
+    },
+    {
+      "id": "moz58fevg61",
+      "name": "17.6.4",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/17.0/17.6.4.exe?sign=brPejTzsiTIXsJse0TtLX0c9K1EFK5nA0am_nWfNNYg=:0",
+      "parentId": "moz528b7g1e",
+      "fileType": "other",
+      "createdAt": "2026-05-10T02:18:13.639Z"
+    },
+    {
+      "id": "moz5aerug1x",
+      "name": "25H2",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/25H2/25H2.zip?sign=9geaQL5s02J_pmhBP9HFX9YSrwfQTBMEHatoUih-_2Q=:0",
+      "parentId": "moz52zzx2iu",
+      "fileType": "zip",
+      "createdAt": "2026-05-10T02:19:46.122Z"
+    },
+    {
+      "id": "moz5bx98zqt",
+      "name": "25H2u1",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/25H2/25H2u1.zip?sign=QGLabqq0clxGn9CU4pwm7ZZ95XbhcEztD7GTM7jbW34=:0",
+      "parentId": "moz52zzx2iu",
+      "fileType": "zip",
+      "createdAt": "2026-05-10T02:20:56.732Z"
+    },
+    {
+      "id": "mp96kpapfr8",
+      "name": "26H1",
+      "url": "http://localhost:5244/d/123%E4%BA%91%E7%9B%98/VMware%20Workstation%20Pro/26H1/26H1.zip?sign=mZwAr-KXvMGCjCQrzdZ7kCtr-UPug-4Rd3tOJmyKVFw=:0",
+      "parentId": "mp96jno34q5",
+      "fileType": "zip",
+      "createdAt": "2026-05-17T02:53:27.697Z"
+    }
+  ]
+}
